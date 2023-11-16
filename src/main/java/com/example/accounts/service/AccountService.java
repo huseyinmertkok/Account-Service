@@ -1,12 +1,18 @@
 package com.example.accounts.service;
 
 import com.example.accounts.dto.CustomerDTO;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.example.accounts.dto.CustomerResponse;
 
 public interface AccountService {
     /**
      * Create account.
      * @param customerDTO Customer object.
      */
-    void createAccount(@RequestBody CustomerDTO customerDTO);
+    void createAccount(CustomerDTO customerDTO);
+
+    /**
+     * Get account.
+     * @param mobileNumber Customer mobile number.
+     */
+    CustomerResponse getAccount(String mobileNumber);
 }
