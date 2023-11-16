@@ -18,8 +18,8 @@ public class AccountsController {
     private final AccountService accountService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDTO> createAccount(@RequestBody CustomerDTO costumerDTO) {
-        accountService.createAccount(costumerDTO);
+    public ResponseEntity<ResponseDTO> createAccount(@RequestBody CustomerDTO customerDTO) {
+        accountService.createAccount(customerDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDTO("201", "Account created successfully."));

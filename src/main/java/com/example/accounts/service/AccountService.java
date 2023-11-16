@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AccountService {
     /**
      * Create account.
-     * @param costumerDTO Customer object.
+     * @param customerDTO Customer object.
      */
-    void createAccount(@RequestBody CustomerDTO costumerDTO);
+    void createAccount(@RequestBody CustomerDTO customerDTO);
 }

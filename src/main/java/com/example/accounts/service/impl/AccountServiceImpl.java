@@ -20,8 +20,6 @@ import java.util.Random;
 public class AccountServiceImpl implements AccountService {
     private final AccountsRepository accountsRepository;
     private final CustomerRepository customerRepository;
-    private final AccountsMapper accountsMapper;
-    private final CustomerMapper customerMapper;
 
     /**
      * Create account.
@@ -31,10 +29,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void createAccount(CustomerDTO customerDTO) {
         if (customerRepository.findByMobileNumber(customerDTO.getMobileNumber()).isPresent()){
-            throw new CustomerAlreadyExistsException("Costumer with given mobile number is already exist");
+            throw new CustomerAlreadyExistsException("Customer with given mobile number is already exist");
         }
         // TODO: mapper not working
-        Customer customer = customerMapper.dtoToCustomer(customerDTO);
+        Customer customer = CustomerMapper.INSTANCE.customerDTOToCustomer(customerDTO);
         customer.setCreatedAt(new Date());
         customer.setCreatedBy("admin");
         Customer savedCustomer = customerRepository.save(customer);
@@ -43,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
 
     private Accounts createNewAccount(Customer customer){
         return Accounts.builder()
-                .costumerId(customer.getCostumerId())
+                .customerId(customer.getCustomerId())
                 .accountNumber(1000000000L + new Random().nextInt(900000000))
                 .accountType("Savings")
                 .branchAddress("123 Main Street, New York")
