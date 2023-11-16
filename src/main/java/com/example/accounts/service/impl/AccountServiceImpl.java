@@ -40,11 +40,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private Accounts createNewAccount(Customer customer){
-        return Accounts.builder()
+        Accounts accounts = Accounts.builder()
                 .customerId(customer.getCustomerId())
                 .accountNumber(1000000000L + new Random().nextInt(900000000))
                 .accountType("Savings")
                 .branchAddress("123 Main Street, New York")
                 .build();
+        accounts.setCreatedAt(customer.getCreatedAt());
+        accounts.setCreatedBy(customer.getCreatedBy());
+        return accounts;
     }
 }
