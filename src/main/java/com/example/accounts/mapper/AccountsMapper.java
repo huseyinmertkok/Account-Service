@@ -3,11 +3,14 @@ package com.example.accounts.mapper;
 import com.example.accounts.dto.AccountsDTO;
 import com.example.accounts.entity.Accounts;
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+@Mapper
 public interface AccountsMapper {
-    AccountsDTO accountsToDTO(Accounts accounts);
 
-    Accounts dtoToAccounts(AccountsDTO accountsDTO);
+    AccountsMapper INSTANCE = Mappers.getMapper(AccountsMapper.class);
+
+    AccountsDTO accountsToaccountsDTO(Accounts accounts);
+
+    Accounts accountsDTOToAccounts(AccountsDTO accountsDTO);
 }
