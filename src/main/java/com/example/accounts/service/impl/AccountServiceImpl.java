@@ -1,7 +1,7 @@
 package com.example.accounts.service.impl;
 
+import com.example.accounts.dto.AccountsDTO;
 import com.example.accounts.dto.CustomerDTO;
-import com.example.accounts.dto.CustomerResponse;
 import com.example.accounts.entity.Accounts;
 import com.example.accounts.entity.Customer;
 import com.example.accounts.exception.CustomerAlreadyExistsException;
@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -26,7 +27,7 @@ public class AccountServiceImpl implements AccountService {
     /**
      * Create account.
      *
-     * @param customerDTO Customer object.
+     * @param customerDTO customer object
      */
     @Override
     public void createAccount(CustomerDTO customerDTO) {
@@ -43,10 +44,12 @@ public class AccountServiceImpl implements AccountService {
 
     /**
      * Get account.
-     * @param mobileNumber Customer mobile number.
+     *
+     * @param mobileNumber customer mobile number
+     * @return customer and account details
      */
     @Override
-    public CustomerResponse getAccount(String mobileNumber) {
+    public CustomerDTO getAccount(String mobileNumber) {
         Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
                 () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber)
         );
@@ -54,11 +57,60 @@ public class AccountServiceImpl implements AccountService {
         Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(
                 () -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
         );
-        CustomerResponse customerResponse = CustomerMapper.INSTANCE.customerToCustomerResponse(customer);
-        customerResponse.setAccountsDTO(AccountsMapper.INSTANCE.accountsToaccountsDTO(accounts));
-        return customerResponse;
+        CustomerDTO customerDTO = CustomerMapper.INSTANCE.customerToCustomerDTO(customer);
+        customerDTO.setAccountsDTO(AccountsMapper.INSTANCE.accountsToaccountsDTO(accounts));
+        return customerDTO;
     }
 
+    /**
+     * Update account.
+     *
+     * @param customerDTO customer object
+     * @return if update is successful
+     */
+    @Override
+    public boolean updateAccount(CustomerDTO customerDTO) {
+        AccountsDTO accountsDTO = customerDTO.getAccountsDTO();
+        if(!Objects.isNull(accountsDTO)){
+            Accounts accounts = accountsRepository.findById(accountsDTO.getAccountNumber()).orElseThrow(
+                    () -> new ResourceNotFoundException("Account", "accountNumber", accountsDTO.getAccountNumber().toString())
+            );
+            AccountsMapper.INSTANCE.updateAccounts(accounts, accountsDTO);
+            accountsRepository.save(accounts);
+
+            Long customerId = accounts.getCustomerId();
+            Customer customer = customerRepository.findById(customerId).orElseThrow(
+                    () -> new ResourceNotFoundException("Customer", "customerID", customerId.toString())
+            );
+            CustomerMapper.INSTANCE.updateCustomer(customer, customerDTO);
+            customerRepository.save(customer);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Delete account.
+     *
+     * @param mobileNumber mobile number of customer
+     * @return if delete is successful
+     */
+    @Override
+    public boolean deleteAccount(String mobileNumber) {
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber)
+        );
+        accountsRepository.deleteByCustomerId(customer.getCustomerId());
+        customerRepository.deleteById(customer.getCustomerId());
+        return true;
+    }
+
+    /**
+     * Create new account for newly created user.
+     *
+     * @param customer customer
+     * @return created account
+     */
     private Accounts createNewAccount(Customer customer){
         Accounts accounts = Accounts.builder()
                 .customerId(customer.getCustomerId())

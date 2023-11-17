@@ -1,9 +1,9 @@
 package com.example.accounts.mapper;
 
 import com.example.accounts.dto.CustomerDTO;
-import com.example.accounts.dto.CustomerResponse;
 import com.example.accounts.entity.Customer;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -14,5 +14,5 @@ public interface CustomerMapper {
 
     Customer customerDTOToCustomer(CustomerDTO customerDTO);
 
-    CustomerResponse customerToCustomerResponse(Customer customer);
+    void updateCustomer(@MappingTarget Customer customer, CustomerDTO customerDTO);
 }

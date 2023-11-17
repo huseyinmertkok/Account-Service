@@ -1,18 +1,36 @@
 package com.example.accounts.service;
 
 import com.example.accounts.dto.CustomerDTO;
-import com.example.accounts.dto.CustomerResponse;
 
 public interface AccountService {
     /**
      * Create account.
-     * @param customerDTO Customer object.
+     *
+     * @param customerDTO customer object
      */
     void createAccount(CustomerDTO customerDTO);
 
     /**
      * Get account.
-     * @param mobileNumber Customer mobile number.
+     *
+     * @param mobileNumber customer mobile number
+     * @return customer and account details
      */
-    CustomerResponse getAccount(String mobileNumber);
+    CustomerDTO getAccount(String mobileNumber);
+
+    /**
+     * Update account.
+     *
+     * @param customerDTO customer object
+     * @return if update is successful
+     */
+    boolean updateAccount(CustomerDTO customerDTO);
+
+    /**
+     * Delete account.
+     *
+     * @param mobileNumber mobile number of customer
+     * @return if delete is successful
+     */
+    boolean deleteAccount(String mobileNumber);
 }
